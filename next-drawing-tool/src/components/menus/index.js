@@ -25,6 +25,7 @@ export const Menu = () => {
   const handleActionItemClick = (itemName) => {
     dispatch(actionItemClick(itemName));
   };
+
   return (
     <div className={styles.menuContainer}>
       <div
@@ -63,7 +64,7 @@ export const Menu = () => {
         className={cx(styles.iconWrapper, {
           [styles.active]: activeMenuItem === MENU_ITEMS.DOWNLOAD,
         })}
-        onClick={() => handleMenuClick(MENU_ITEMS.DOWNLOAD)}
+        onClick={() => handleActionItemClick(MENU_ITEMS.DOWNLOAD)}
       >
         <FontAwesomeIcon icon={faArrowDown} className={styles.icon} />
       </div>

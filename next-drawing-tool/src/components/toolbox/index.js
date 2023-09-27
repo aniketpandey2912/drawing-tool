@@ -20,7 +20,6 @@ export const ToolBox = () => {
     dispatch(changeColor({ item: activeMenuItem, color: newColor }));
   };
 
-  console.log(size);
   return (
     <div className={styles.toolBoxContainer}>
       {showStrokeToolOption && (
