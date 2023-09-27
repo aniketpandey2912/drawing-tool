@@ -10,6 +10,10 @@ export const Board = () => {
   const { activeMenuItem, actionMenuItem } = useSelector((state) => state.menu);
   const { color, size } = useSelector((state) => state.toolbox[activeMenuItem]);
 
+  // draw history - for undo and redo
+  const drawHistory = useRef([]);
+  const historyPointer = useRef(0);
+
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -22,6 +26,15 @@ export const Board = () => {
       anchor.href = URL;
       anchor.download = "sketch.png";
       anchor.click();
+    } else if (actionMenuItem === MENU_ITEMS.UNDO) {
+      if (historyPointer.current > 0) historyPointer.current -= 1;
+      const lastImageData = drawHistory.current[historyPointer.current];
+      context.putImageData(lastImageData, 0, 0);
+    } else if (actionMenuItem === MENU_ITEMS.REDO) {
+      if (historyPointer.current < drawHistory.current.length - 1)
+        historyPointer.current += 1;
+      const lastImageData = drawHistory.current[historyPointer.current];
+      context.putImageData(lastImageData, 0, 0);
     }
     dispatch(actionItemClick(null));
     console.log("actionMenuItem::", actionMenuItem);
@@ -70,6 +83,14 @@ export const Board = () => {
     };
     const handleMouseUp = (e) => {
       shouldDraw.current = false;
+      const currentImageData = context.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      drawHistory.current.push(currentImageData);
+      historyPointer.current = drawHistory.current.length - 1;
     };
 
     canvas.addEventListener("mousedown", handleMouseDown);
